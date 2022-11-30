@@ -10,8 +10,13 @@ contract Wave3 {
         uint256 waves;
     }
 
+    struct Wave {
+        uint256 wavesNumber;
+        uint256 lastWaveTimestamp;
+    }
+
     uint256 totalWaves;
-    mapping(address => uint256) wavers;
+    mapping(address => Wave) wavers;
     TopWaver[10] topWavers;
 
     constructor() {
@@ -19,20 +24,26 @@ contract Wave3 {
     }
 
     function wave() public {
-        totalWaves += 1;
-        wavers[msg.sender] += 1;
+        require(
+            wavers[msg.sender].lastWaveTimestamp < block.timestamp - 86400,
+            "You already waved in the last 24 hours."
+        );
 
-        console.log("%s has waved !", msg.sender);
-        updateTopWavers(msg.sender, wavers[msg.sender]);
+        totalWaves += 1;
+        wavers[msg.sender].wavesNumber += 1;
+        wavers[msg.sender].lastWaveTimestamp = block.timestamp;
+
+        console.log("%s has waved ! (%d)", msg.sender, block.timestamp);
+        updateTopWavers(msg.sender, wavers[msg.sender].wavesNumber);
     }
 
-    function updateTopWavers(address addr, uint256 senderWaves) private {
+    function updateTopWavers(address addr, uint256 senderWavesNumber) private {
         uint256 topIndex = 0;
         bool alreadyFound = false;
         uint256 alreadyFoundIndex = 0;
 
         for (; topIndex < topWavers.length; topIndex++) {
-            if (senderWaves > topWavers[topIndex].waves) {
+            if (senderWavesNumber > topWavers[topIndex].waves) {
                 break;
             }
         }
@@ -58,12 +69,12 @@ contract Wave3 {
         }
 
         topWavers[topIndex].addr = addr;
-        topWavers[topIndex].waves = senderWaves;
+        topWavers[topIndex].waves = senderWavesNumber;
     }
 
     function getSenderWaves() public view returns (uint256) {
-        console.log("Sender waved %d times !", wavers[msg.sender]);
-        return wavers[msg.sender];
+        console.log("Sender waved %d times !", wavers[msg.sender].wavesNumber);
+        return wavers[msg.sender].wavesNumber;
     }
 
     function getTotalWaves() public view returns (uint256) {
