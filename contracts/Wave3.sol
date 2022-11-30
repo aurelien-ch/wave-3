@@ -87,6 +87,7 @@ contract Wave3 {
 
         for (uint256 i = 0; i < topWavers.length; i++) {
             TopWaver storage topWaver = topWavers[i];
+
             topWaversAddrs[i] = topWaver.addr;
             topWaversWaves[i] = topWaver.waves;
         }
