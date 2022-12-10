@@ -26,7 +26,7 @@ contract Wave3 {
     function wave() public {
         require(
             wavers[msg.sender].lastWaveTimestamp < block.timestamp - 86400,
-            "You already waved in the last 24 hours."
+            "You already waved at me in the last 24 hours. Please retry later !"
         );
 
         totalWaves += 1;

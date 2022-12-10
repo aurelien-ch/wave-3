@@ -9,7 +9,7 @@ const main = async () => {
   const waveContract = await waveContractFactory.deploy();
   await waveContract.deployed();
 
-  console.log("WavePortal address: ", waveContract.address);
+  console.log("Contract address: ", waveContract.address);
 };
 
 const runMain = async () => {
