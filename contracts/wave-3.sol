@@ -7,16 +7,22 @@ import "hardhat/console.sol";
 contract Wave3 {
     struct TopWaver {
         address addr;
-        uint256 waves;
+        uint256 wavesCount;
     }
 
-    struct Wave {
-        uint256 wavesNumber;
+    struct WaverData {
+        uint256 wavesCount;
         uint256 lastWaveTimestamp;
     }
 
-    uint256 totalWaves;
-    mapping(address => Wave) wavers;
+    struct Wave {
+        address waverAddr;
+        uint256 timestamp;
+    }
+
+    uint256 totalWavesCount;
+    Wave[] waves;
+    mapping(address => WaverData) wavers;
     TopWaver[10] topWavers;
 
     constructor() {
@@ -29,21 +35,21 @@ contract Wave3 {
             "You already waved at me in the last 24 hours. Please retry later !"
         );
 
-        totalWaves += 1;
-        wavers[msg.sender].wavesNumber += 1;
+        waves.push(Wave(msg.sender, block.timestamp));
+        totalWavesCount += 1;
+        wavers[msg.sender].wavesCount += 1;
         wavers[msg.sender].lastWaveTimestamp = block.timestamp;
 
-        console.log("%s has waved ! (%d)", msg.sender, block.timestamp);
-        updateTopWavers(msg.sender, wavers[msg.sender].wavesNumber);
+        updateTopWavers(msg.sender, wavers[msg.sender].wavesCount);
     }
 
-    function updateTopWavers(address addr, uint256 senderWavesNumber) private {
+    function updateTopWavers(address addr, uint256 senderWavesCount) private {
         uint256 topIndex = 0;
         bool alreadyFound = false;
         uint256 alreadyFoundIndex = 0;
 
         for (; topIndex < topWavers.length; topIndex++) {
-            if (senderWavesNumber > topWavers[topIndex].waves) {
+            if (senderWavesCount > topWavers[topIndex].wavesCount) {
                 break;
             }
         }
@@ -65,21 +71,23 @@ contract Wave3 {
             i--
         ) {
             topWavers[i].addr = topWavers[i - 1].addr;
-            topWavers[i].waves = topWavers[i - 1].waves;
+            topWavers[i].wavesCount = topWavers[i - 1].wavesCount;
         }
 
         topWavers[topIndex].addr = addr;
-        topWavers[topIndex].waves = senderWavesNumber;
+        topWavers[topIndex].wavesCount = senderWavesCount;
     }
 
-    function getSenderWaves() public view returns (uint256) {
-        console.log("Sender waved %d times !", wavers[msg.sender].wavesNumber);
-        return wavers[msg.sender].wavesNumber;
+    function getWaves() public view returns (Wave[] memory) {
+        return waves;
     }
 
-    function getTotalWaves() public view returns (uint256) {
-        console.log("We have %d total waves !", totalWaves);
-        return totalWaves;
+    function getSenderWavesCount() public view returns (uint256) {
+        return wavers[msg.sender].wavesCount;
+    }
+
+    function getTotalWavesCount() public view returns (uint256) {
+        return totalWavesCount;
     }
 
     function getTopWavers()
@@ -87,12 +95,6 @@ contract Wave3 {
         view
         returns (address[] memory, uint256[] memory)
     {
-        console.log("Top 10 wavers :");
-
-        for (uint256 i = 0; i < topWavers.length; i++) {
-            console.log(topWavers[i].addr, "-", topWavers[i].waves, "waves");
-        }
-
         address[] memory topWaversAddrs = new address[](topWavers.length);
         uint256[] memory topWaversWaves = new uint256[](topWavers.length);
 
@@ -100,7 +102,7 @@ contract Wave3 {
             TopWaver storage topWaver = topWavers[i];
 
             topWaversAddrs[i] = topWaver.addr;
-            topWaversWaves[i] = topWaver.waves;
+            topWaversWaves[i] = topWaver.wavesCount;
         }
 
         return (topWaversAddrs, topWaversWaves);
