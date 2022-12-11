@@ -20,6 +20,8 @@ contract Wave3 {
         uint256 timestamp;
     }
 
+    event NewWave(address indexed waverAddr, uint256 timestamp);
+
     uint256 totalWavesCount;
     Wave[] waves;
     mapping(address => WaverData) wavers;
@@ -36,11 +38,13 @@ contract Wave3 {
         );
 
         waves.push(Wave(msg.sender, block.timestamp));
+
         totalWavesCount += 1;
         wavers[msg.sender].wavesCount += 1;
         wavers[msg.sender].lastWaveTimestamp = block.timestamp;
 
         updateTopWavers(msg.sender, wavers[msg.sender].wavesCount);
+        emit NewWave(msg.sender, block.timestamp);
     }
 
     function updateTopWavers(address addr, uint256 senderWavesCount) private {
