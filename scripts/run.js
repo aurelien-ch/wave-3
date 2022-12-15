@@ -33,7 +33,7 @@ const main = async () => {
   console.log(await waveContract.getTotalWavesCount());
   console.log(await waveContract.getSenderWavesCount());
   console.log(await waveContract.getTopWavers());
-  console.log(await waveContract.getWaves());
+  console.log(await waveContract.getWaves(0, 5));
 };
 
 const runMain = async () => {
