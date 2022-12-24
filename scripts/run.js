@@ -7,33 +7,28 @@ const main = async () => {
   console.log("Contract deployed to :", waveContract.address);
   console.log("Contract deployed by :", owner.address);
 
-  await waveContract.getTotalWavesCount();
+  console.log("Total waves count :", await waveContract.getTotalWavesCount());
 
   const firstWaveTxn = await waveContract.wave();
   await firstWaveTxn.wait();
 
-  await waveContract.getTotalWavesCount();
+  console.log(owner.address, "just waved");
+  console.log("Total waves count :", await waveContract.getTotalWavesCount());
 
   const secondWaveTxn = await waveContract.connect(randomPerson1).wave();
   await secondWaveTxn.wait();
 
-  await waveContract.getTotalWavesCount();
+  console.log(randomPerson1.address, "just waved");
+  console.log("Total waves count :", await waveContract.getTotalWavesCount());
 
-  const thirdWaveTxn = await waveContract.wave();
+  const thirdWaveTxn = await waveContract.connect(randomPerson2).wave();
   await thirdWaveTxn.wait();
 
-  await waveContract.getTotalWavesCount();
+  console.log(randomPerson2.address, "just waved");
+  console.log("Total waves count :", await waveContract.getTotalWavesCount());
 
-  const fourthWaveTxn = await waveContract.connect(randomPerson2).wave();
-  await fourthWaveTxn.wait();
-
-  const fifthWaveTxn = await waveContract.connect(randomPerson2).wave();
-  await fifthWaveTxn.wait();
-
-  console.log(await waveContract.getTotalWavesCount());
-  console.log(await waveContract.getSenderWavesCount());
-  console.log(await waveContract.getTopWavers());
-  console.log(await waveContract.getWaves(0, 5));
+  console.log("Top wavers :", await waveContract.getTopWavers());
+  console.log("Five first waves :", await waveContract.getWaves(0, 5));
 };
 
 const runMain = async () => {
