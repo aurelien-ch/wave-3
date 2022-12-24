@@ -1,13 +1,16 @@
-# Sample Hardhat Project
+# Wave3
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+Wave3 is a decentralized application (dApp) that allows users to wave at me by making an Ethereum transaction on the Goerli testnet. Each user's waves are recorded on the blockchain, and a leaderboard displays the users who have waved the most times. Users can only wave once every 24 hours.
 
-Try running some of the following tasks:
+This repository is the smart contract of Wave3 (Solidity).
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-```
+## Set up
+
+To set up and test the smart contract locally:
+
+1. Clone the repository : `git clone https://github.com/aurelien-ch/wave-3.git`
+2. Run the test script : `npx hardhat run scripts/run.js`
+
+## Deployment
+
+To deploy the contract on the Goerli testnet : `npx hardhat run scripts/deploy.js --network goerli`
